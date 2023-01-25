@@ -1,0 +1,25 @@
+{
+  "name": "binary-search-tree-todp",
+  "version": "1.0.0",
+  "description": "Binary search tree implementation",
+  "main": "binary-search-tree.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aortiz97-stack/Binary-Search-Tree-TODP.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aortiz97-stack/Binary-Search-Tree-TODP/issues"
+  },
+  "homepage": "https://github.com/aortiz97-stack/Binary-Search-Tree-TODP#readme",
+  "devDependencies": {
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}

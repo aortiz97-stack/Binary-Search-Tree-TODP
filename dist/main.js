@@ -1,0 +1,1 @@
+(()=>{const r=(o=[1,7,4,23,8,9,4,3,5,7,9,67,6345,324],{sortedArray:(()=>{const r=new Set(o);let e=Array.from(r);return e=e.sort(),console.log(`finallArr: ${e}`),e})()});var o;console.log(r.sortedArray)})();
