@@ -25,7 +25,6 @@ const Tree = (array) => {
     const mid = Math.floor((end + start) / 2);
 
     const root = Node(sortedArray[mid]);
-    console.log(`ROOT: ${root.data}`);
     const leftChild = buildTree(start, mid - 1);
     const rightChild = buildTree(mid + 1, end);
 
@@ -35,10 +34,21 @@ const Tree = (array) => {
     return root;
   };
 
+  //prettyPrint code provided by The Odin Project
+  const prettyPrint = (node, prefix = '', isLeft = true) => {
+    if (node.rightChild !== null) {
+      prettyPrint(node.rightChild, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+    }
+    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+    if (node.leftChild !== null) {
+      prettyPrint(node.leftChild, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+    }
+  };
+
   const mainRoot = buildTree();
 
-  return { sortedArray, mainRoot };
+  return { sortedArray, mainRoot, prettyPrint };
 };
 
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-console.log(tree.mainRoot);
+tree.prettyPrint(tree.mainRoot);
