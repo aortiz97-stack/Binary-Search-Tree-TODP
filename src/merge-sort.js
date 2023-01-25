@@ -33,7 +33,7 @@ function merge(sortedLeftHalf, sortedRightHalf, sortedArr = []) {
   return merge(left, right, sortedArr);
 }
 
-function mergeSort(array) {
+export default function mergeSort(array) {
   if (array.length < 2) return array;
 
   const lastLeftIndex = getHalfIndex(array.length);
@@ -46,5 +46,3 @@ function mergeSort(array) {
   // Merge
   return merge(sortedLeftHalf, sortedRightHalf);
 }
-
-console.log(mergeSort([3, 1, 0, 5, 2, 2, 7]));

@@ -1,3 +1,5 @@
+import mergeSort from './merge-sort';
+
 const Node = (value) => {
   const data = value;
   const leftChild = null;
@@ -8,10 +10,10 @@ const Node = (value) => {
 
 const Tree = (array) => {
   const prepareArray = () => {
-    const processingArray = new Set(array);
-    let finalArray = (Array.from(processingArray));
-    finalArray = finalArray.sort();
-    console.log(`finallArr: ${finalArray}`);
+    let processingArray = new Set(array);
+    processingArray = (Array.from(processingArray));
+    const finalArray = mergeSort(processingArray);
+
     return finalArray;
   };
 
@@ -20,9 +22,10 @@ const Tree = (array) => {
   const buildTree = (start = 0, end = sortedArray.length - 1) => {
     if (start > end) return null;
 
-    const mid = Math.floor((end - start) / 2);
+    const mid = Math.floor((end + start) / 2);
 
-    const root = sortedArray[mid];
+    const root = Node(sortedArray[mid]);
+    console.log(`ROOT: ${root.data}`);
     const leftChild = buildTree(start, mid - 1);
     const rightChild = buildTree(mid + 1, end);
 
@@ -32,8 +35,10 @@ const Tree = (array) => {
     return root;
   };
 
-  return { sortedArray };
+  const mainRoot = buildTree();
+
+  return { sortedArray, mainRoot };
 };
 
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-console.log(tree.sortedArray);
+console.log(tree.mainRoot);
