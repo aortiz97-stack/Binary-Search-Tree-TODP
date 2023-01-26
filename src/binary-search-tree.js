@@ -34,7 +34,7 @@ const Tree = (array) => {
     return root;
   };
 
-  //prettyPrint code provided by The Odin Project
+  // prettyPrint code provided by The Odin Project
   const prettyPrint = (node, prefix = '', isLeft = true) => {
     if (node.rightChild !== null) {
       prettyPrint(node.rightChild, `${prefix}${isLeft ? '│   ' : '    '}`, false);
@@ -47,8 +47,43 @@ const Tree = (array) => {
 
   const mainRoot = buildTree();
 
-  return { sortedArray, mainRoot, prettyPrint };
+  const insert = (value, root = mainRoot) => {
+    const newNode = Node(value);
+    const currRoot = root;
+    if (currRoot === null || newNode.data === currRoot.data) {
+      console.log(`single root ${currRoot.data} was returned`);
+      return currRoot;
+    }
+
+    let foundRoot;
+    if (newNode.data < currRoot.data) {
+      if (currRoot.leftChild === null) {
+        currRoot.leftChild = newNode;
+        console.log(`left child added to root ${currRoot.data}`);
+        return currRoot;
+      }
+      foundRoot = insert(value, currRoot.leftChild);
+      foundRoot.leftChild = newNode;
+      console.log(`left child added to foundRoot ${foundRoot.data}`);
+    } else if (newNode.data > currRoot.data) {
+      if (currRoot.rightChild === null) {
+        currRoot.rightChild = newNode;
+        console.log(`right child added to root ${currRoot.data} `);
+        return currRoot;
+      }
+      foundRoot = insert(value, currRoot.rightChild);
+      foundRoot.rightChild = newNode;
+      console.log(`right child added to foundRoot ${foundRoot.data}`);
+    }
+    console.log(`foundRoot: ${foundRoot.data}`);
+    return foundRoot;
+  };
+
+  return {
+    sortedArray, mainRoot, prettyPrint, insert,
+  };
 };
 
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+tree.insert(63);
 tree.prettyPrint(tree.mainRoot);
