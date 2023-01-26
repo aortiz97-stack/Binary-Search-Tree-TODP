@@ -86,6 +86,10 @@ const Tree = (array) => {
     if (popped.data === value) {
       return popped;
     }
+    if (popped.leftChild === null && popped.rightChild === null
+      && popped.data !== value && stack.length === 0) {
+      return null;
+    }
     if (popped.leftChild !== null) {
       nodeStack.push(popped.leftChild);
     }
@@ -117,6 +121,26 @@ const Tree = (array) => {
     return levelOrder(callBack, queue, visited);
   };
 
+  const preorder = (stack = [getMainRoot().data], visited = []) => {
+    const unstackedValue = stack.pop();
+    const unstackedNode = find(unstackedValue);
+    if (!visited.includes(unstackedValue)) {
+      visited.push(unstackedValue);
+    }
+
+    if (unstackedNode.leftChild === null && unstackedNode.rightChild === null
+      && stack.length === 0) {
+      return visited;
+    }
+
+    if (unstackedNode.rightChild !== null) {
+      stack.push(unstackedNode.rightChild.data);
+    } if (unstackedNode.leftChild !== null) {
+      stack.push(unstackedNode.leftChild.data);
+    }
+    return preorder(stack, visited);
+  };
+
   const deleteNode = (value) => {
     const toDeleteNode = find(value);
     if (toDeleteNode.data === getMainRoot().data) {
@@ -128,7 +152,7 @@ const Tree = (array) => {
   };
 
   return {
-    getSortedArray, getMainRoot, prettyPrint, insertNode, levelOrder, find, deleteNode,
+    getSortedArray, getMainRoot, prettyPrint, insertNode, levelOrder, find, deleteNode, preorder,
   };
 };
 
@@ -142,5 +166,6 @@ tree.insertNode(-1);
 tree.insertNode(100000);
 tree.deleteNode(8);
 tree.insertNode(-2);
+
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.levelOrder());
+console.log(tree.preorder());
