@@ -95,17 +95,40 @@ const Tree = (array) => {
     return find(value, nodeStack);
   };
 
+  const levelOrder = (callBack = undefined, queue = [getMainRoot().data], visited = []) => {
+    const dequeuedValue = queue.shift();
+    const dequeuedNode = find(dequeuedValue);
+    if (!visited.includes(dequeuedValue)) {
+      visited.push(dequeuedValue);
+    }
+    if (queue.length === 0 && dequeuedNode.leftChild === null
+    && dequeuedNode.rightChild === null) {
+      if (callBack !== undefined) {
+        return callBack(visited);
+      }
+      return visited;
+    }
+
+    if (dequeuedNode.leftChild !== null) {
+      queue.push(dequeuedNode.leftChild.data);
+    } if (dequeuedNode.rightChild !== null) {
+      queue.push(dequeuedNode.rightChild.data);
+    }
+    return levelOrder(callBack, queue, visited);
+  };
+
   const deleteNode = (value) => {
-    const toDeleteNode = Node(value);
+    const toDeleteNode = find(value);
     if (toDeleteNode.data === getMainRoot().data) {
       const mid = Math.floor((0 + sortedArray.length - 1) / 2);
       getSortedArray().splice(mid, 1);
       setMainRoot(buildTree());
+    } else if (toDeleteNode.leftChild === null && toDeleteNode.rightChild === null) {
     }
   };
 
   return {
-    getSortedArray, getMainRoot, prettyPrint, insertNode, find, deleteNode,
+    getSortedArray, getMainRoot, prettyPrint, insertNode, levelOrder, find, deleteNode,
   };
 };
 
@@ -119,5 +142,5 @@ tree.insertNode(-1);
 tree.insertNode(100000);
 tree.deleteNode(8);
 tree.insertNode(-2);
-console.log(tree.find(-2).data);
-//tree.prettyPrint(tree.getMainRoot());
+tree.prettyPrint(tree.getMainRoot());
+console.log(tree.levelOrder());
