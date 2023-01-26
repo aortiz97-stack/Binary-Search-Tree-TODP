@@ -55,28 +55,22 @@ const Tree = (array) => {
       return currRoot;
     }
 
-    let foundRoot;
     if (newNode.data < currRoot.data) {
       if (currRoot.leftChild === null) {
         currRoot.leftChild = newNode;
         console.log(`left child added to root ${currRoot.data}`);
         return currRoot;
       }
-      foundRoot = insert(value, currRoot.leftChild);
-      foundRoot.leftChild = newNode;
-      console.log(`left child added to foundRoot ${foundRoot.data}`);
-    } else if (newNode.data > currRoot.data) {
+      return insert(value, currRoot.leftChild);
+    } if (newNode.data > currRoot.data) {
       if (currRoot.rightChild === null) {
         currRoot.rightChild = newNode;
         console.log(`right child added to root ${currRoot.data} `);
         return currRoot;
       }
-      foundRoot = insert(value, currRoot.rightChild);
-      foundRoot.rightChild = newNode;
-      console.log(`right child added to foundRoot ${foundRoot.data}`);
+      return insert(value, currRoot.rightChild);
     }
-    console.log(`foundRoot: ${foundRoot.data}`);
-    return foundRoot;
+    return currRoot;
   };
 
   return {
@@ -86,4 +80,10 @@ const Tree = (array) => {
 
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
 tree.insert(63);
+tree.insert(65);
+tree.insert(64);
+tree.insert(0);
+tree.insert(10000);
+tree.insert(-1);
+tree.insert(100000);
 tree.prettyPrint(tree.mainRoot);
