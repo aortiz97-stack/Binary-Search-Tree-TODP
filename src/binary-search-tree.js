@@ -17,14 +17,17 @@ const Tree = (array) => {
     return finalArray;
   };
 
-  const sortedArray = prepareArray();
+  let sortedArray = prepareArray();
+
+  const getSortedArray = () => sortedArray;
+  const setSortedArray = (newSortedArray) => { sortedArray = newSortedArray; };
 
   const buildTree = (start = 0, end = sortedArray.length - 1) => {
     if (start > end) return null;
 
     const mid = Math.floor((end + start) / 2);
 
-    const root = Node(sortedArray[mid]);
+    const root = Node(getSortedArray()[mid]);
     const leftChild = buildTree(start, mid - 1);
     const rightChild = buildTree(mid + 1, end);
 
@@ -45,45 +48,59 @@ const Tree = (array) => {
     }
   };
 
-  const mainRoot = buildTree();
+  let mainRoot = buildTree();
 
-  const insert = (value, root = mainRoot) => {
+  const getMainRoot = () => mainRoot;
+  const setMainRoot = (newRoot) => { mainRoot = newRoot; };
+
+  const insertNode = (value, root = getMainRoot()) => {
     const newNode = Node(value);
+    getSortedArray().push(value);
+    const newSortedArray = mergeSort(Array.from(new Set(getSortedArray())));
+    setSortedArray(newSortedArray);
     const currRoot = root;
+
     if (currRoot === null || newNode.data === currRoot.data) {
-      console.log(`single root ${currRoot.data} was returned`);
       return currRoot;
     }
 
     if (newNode.data < currRoot.data) {
       if (currRoot.leftChild === null) {
         currRoot.leftChild = newNode;
-        console.log(`left child added to root ${currRoot.data}`);
         return currRoot;
       }
-      return insert(value, currRoot.leftChild);
+      return insertNode(value, currRoot.leftChild);
     } if (newNode.data > currRoot.data) {
       if (currRoot.rightChild === null) {
         currRoot.rightChild = newNode;
-        console.log(`right child added to root ${currRoot.data} `);
         return currRoot;
       }
-      return insert(value, currRoot.rightChild);
+      return insertNode(value, currRoot.rightChild);
     }
     return currRoot;
   };
 
+  const deleteNode = (value) => {
+    const newNode = Node(value);
+    if (newNode.data === getMainRoot().data) {
+      const mid = Math.floor((0 + sortedArray.length - 1) / 2);
+      getSortedArray().splice(mid, 1);
+      setMainRoot(buildTree());
+    }
+  };
+
   return {
-    sortedArray, mainRoot, prettyPrint, insert,
+    getSortedArray, getMainRoot, prettyPrint, insertNode, deleteNode,
   };
 };
 
 const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-tree.insert(63);
-tree.insert(65);
-tree.insert(64);
-tree.insert(0);
-tree.insert(10000);
-tree.insert(-1);
-tree.insert(100000);
-tree.prettyPrint(tree.mainRoot);
+tree.insertNode(63);
+tree.insertNode(65);
+tree.insertNode(64);
+tree.insertNode(0);
+tree.insertNode(10000);
+tree.insertNode(-1);
+tree.insertNode(100000);
+tree.deleteNode(8);
+tree.prettyPrint(tree.getMainRoot());
