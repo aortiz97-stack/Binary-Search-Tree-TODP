@@ -141,6 +141,34 @@ const Tree = (array) => {
     return preorder(stack, visited);
   };
 
+  const inorder = (rootValue = getMainRoot().data, stack = [], visited = [], hasPopped = []) => {
+    const root = find(rootValue);
+    if (rootValue === null) {
+      return visited;
+    }
+    if (root.leftChild === null && root.rightChild === null) {
+      console.log(`pushing is happening`);
+      visited.push(rootValue);
+      //return visited;
+    }
+
+    if (root.rightChild !== null && !hasPopped.includes(root.rightChild.data)) {
+      stack.push(root.rightChild.data);
+    }
+    if (!hasPopped.includes(rootValue)) stack.push(rootValue);
+    if (root.leftChild !== null && !hasPopped.includes(root.leftChild.data)) {
+      stack.push(root.leftChild.data);
+    }
+
+    console.log(`stack: ${stack}`);
+    const popped = stack.pop();
+    hasPopped.push(popped);
+    if (stack.length === 0) {
+      return visited;
+    }
+    return inorder(popped, stack, visited, hasPopped);
+  };
+
   const deleteNode = (value) => {
     const toDeleteNode = find(value);
     if (toDeleteNode.data === getMainRoot().data) {
@@ -152,7 +180,15 @@ const Tree = (array) => {
   };
 
   return {
-    getSortedArray, getMainRoot, prettyPrint, insertNode, levelOrder, find, deleteNode, preorder,
+    getSortedArray,
+    getMainRoot,
+    prettyPrint,
+    insertNode,
+    levelOrder,
+    find,
+    deleteNode,
+    preorder,
+    inorder,
   };
 };
 
@@ -168,4 +204,34 @@ tree.deleteNode(8);
 tree.insertNode(-2);
 
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.preorder());
+console.log(tree.inorder());
+
+/* console.log(`the stack before pop: ${stack}`);
+    const rootValue = stack.pop();
+    console.log(`the stack after the pop: ${stack}`)
+    const root = find(rootValue);
+    console.log(`the rootValue: ${rootValue}`);
+
+    if (root === null || (root.rightChild === null && root.leftChild === null)) {
+      if (root !== null && stack.length === 0) {
+        visited.push(root);
+        return visited;
+      }
+      if (stack.length === 0) {
+        return rootValue;
+      }
+      return rootValue;
+    }
+
+    if (root.leftChild !== null) {
+      console.log(`the leftChild: ${root.leftChild.data}`);
+      stack.push(root.leftChild.data);
+      const leftMostChildData = inorder(stack, visited);
+      visited.push(leftMostChildData);
+    }
+    visited.push(rootValue);
+    if (root.rightChild !== null) {
+      const rightChild = inorder(stack, visited);
+      stack.push(rightChild);
+    }
+    return inorder(stack, visited); */
