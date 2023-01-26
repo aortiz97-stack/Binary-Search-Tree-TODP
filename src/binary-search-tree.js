@@ -80,9 +80,24 @@ const Tree = (array) => {
     return currRoot;
   };
 
+  const find = (value, stack = [getMainRoot()]) => {
+    const nodeStack = stack;
+    const popped = stack.pop();
+    if (popped.data === value) {
+      return popped;
+    }
+    if (popped.leftChild !== null) {
+      nodeStack.push(popped.leftChild);
+    }
+    if (popped.rightChild !== null) {
+      nodeStack.push(popped.rightChild);
+    }
+    return find(value, nodeStack);
+  };
+
   const deleteNode = (value) => {
-    const newNode = Node(value);
-    if (newNode.data === getMainRoot().data) {
+    const toDeleteNode = Node(value);
+    if (toDeleteNode.data === getMainRoot().data) {
       const mid = Math.floor((0 + sortedArray.length - 1) / 2);
       getSortedArray().splice(mid, 1);
       setMainRoot(buildTree());
@@ -90,7 +105,7 @@ const Tree = (array) => {
   };
 
   return {
-    getSortedArray, getMainRoot, prettyPrint, insertNode, deleteNode,
+    getSortedArray, getMainRoot, prettyPrint, insertNode, find, deleteNode,
   };
 };
 
@@ -103,4 +118,6 @@ tree.insertNode(10000);
 tree.insertNode(-1);
 tree.insertNode(100000);
 tree.deleteNode(8);
-tree.prettyPrint(tree.getMainRoot());
+tree.insertNode(-2);
+console.log(tree.find(-2).data);
+//tree.prettyPrint(tree.getMainRoot());
