@@ -16,7 +16,6 @@ const Tree = (array) => {
     let processingArray = new Set(array);
     processingArray = (Array.from(processingArray));
     const finalArray = mergeSort(processingArray);
-
     return finalArray;
   };
 
@@ -25,7 +24,7 @@ const Tree = (array) => {
   const getSortedArray = () => sortedArray;
   const setSortedArray = (newSortedArray) => { sortedArray = newSortedArray; };
 
-  const buildTree = (start = 0, end = sortedArray.length - 1) => {
+  const buildTree = (start = 0, end = getSortedArray().length - 1) => {
     if (start > end) return null;
 
     const mid = Math.floor((end + start) / 2);
@@ -219,6 +218,78 @@ const Tree = (array) => {
     return inorder(stack, visited);
   };
 
+  const postorder = (stack = [getMainRoot().data], visited = []) => {
+    console.log(`beggining stack: ${stack}`);
+    if (stack.length === 0) {
+      return visited;
+    }
+    let rootValue = stack.pop();
+    let root = find(rootValue);
+
+    if (rootValue === null) {
+      console.log(`original root: ${rootValue}`);
+      rootValue = stack.pop();
+      root = find(rootValue);
+      console.log(`new root: ${rootValue}`);
+    }
+    if (root === null) {
+      return visited;
+    }
+
+    if (root.leftChild === null && root.rightChild === null) {
+      visited.push(rootValue);
+      console.log(`leaf node visit: ${visited}`);
+      return postorder(stack, visited);
+    }
+    function allChildrenVisited() {
+      const bothChildrenVisited = root.rightChild !== null && root.leftChild !== null
+      && visited.includes(root.leftChild.data) && visited.includes(root.rightChild.data);
+      const leftNullRightVisited = root.rightChild !== null && root.leftChild === null
+      && visited.includes(root.rightChild.data);
+      const leftVisitedRightNull = root.leftChild !== null && root.rightChild === null
+      && visited.includes(root.leftChild.data);
+
+      return (bothChildrenVisited || leftNullRightVisited || leftVisitedRightNull);
+    }
+    if (allChildrenVisited()) {
+      visited.push(rootValue);
+      console.log(`children visited visited: ${visited}`);
+      return postorder(stack, visited);
+    }
+    if (root.rightChild === null && root.leftChild !== null) {
+      if (!visited.includes(rootValue)) {
+        stack.push(rootValue);
+      }
+      stack.push(null);
+      if (!visited.includes(root.leftChild.data)) {
+        stack.push(root.leftChild.data);
+      }
+      console.log(`right null visit: ${visited}`);
+      return postorder(stack, visited);
+    }
+    if (root.leftChild === null && root.rightChild !== null) {
+      if (visited.includes(root.rightChild.data)) {
+        visited.push(rootValue);
+        console.log(`left null visit: ${visited}`);
+        return postorder(stack, visited);
+      }
+    }
+
+    stack.push(rootValue);
+
+    if (root.rightChild !== null && !visited.includes(root.rightChild.data)) {
+      stack.push(root.rightChild.data);
+    }
+
+    if (root.leftChild !== null && !visited.includes(root.leftChild.data)) {
+      stack.push(root.leftChild.data);
+    }
+    console.log(`stack after: ${stack}`);
+
+    console.log(`VISITED: ${visited}`);
+    return postorder(stack, visited);
+  };
+
   const deleteNode = (value) => {
     const toDeleteNode = find(value);
     if (toDeleteNode.data === getMainRoot().data) {
@@ -238,6 +309,7 @@ const Tree = (array) => {
     deleteNode,
     preorder,
     inorder,
+    postorder,
     getRightMost,
   };
 };
@@ -253,71 +325,4 @@ tree.insertNode(100000);
 tree.insertNode(-2);
 
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.inorder());
-
-/* console.log(`the stack before pop: ${stack}`);
-    const rootValue = stack.pop();
-    console.log(`the stack after the pop: ${stack}`)
-    const root = find(rootValue);
-    console.log(`the rootValue: ${rootValue}`);
-
-    if (root === null || (root.rightChild === null && root.leftChild === null)) {
-      if (root !== null && stack.length === 0) {
-        visited.push(root);
-        return visited;
-      }
-      if (stack.length === 0) {
-        return rootValue;
-      }
-      return rootValue;
-    }
-
-    if (root.leftChild !== null) {
-      console.log(`the leftChild: ${root.leftChild.data}`);
-      stack.push(root.leftChild.data);
-      const leftMostChildData = inorder(stack, visited);
-      visited.push(leftMostChildData);
-    }
-    visited.push(rootValue);
-    if (root.rightChild !== null) {
-      const rightChild = inorder(stack, visited);
-      stack.push(rightChild);
-    }
-    return inorder(stack, visited); */
-
-/*
-    const root = find(rootValue);
-    if (rootValue === null) {
-      return visited;
-    }
-    if (root.leftChild === null && root.rightChild === null) {
-      console.log('pushing is happening');
-      visited.push(rootValue);
-      if (root === getMainRoot()) {
-        return visited;
-      }
-      console.log(`what's the matter?`);
-      visited.push(root.parent.data);
-      console.log(`it passed this!~`);
-      if (root.parent.rightChild !== null) {
-        visited.push(root.parent.rightChild.data);
-      }
-    }
-
-    if (root.rightChild !== null && !hasPopped.includes(root.rightChild.data)) {
-      stack.push(root.rightChild.data);
-    }
-    if (!hasPopped.includes(rootValue)) stack.push(rootValue);
-    if (root.leftChild !== null && !hasPopped.includes(root.leftChild.data)) {
-      stack.push(root.leftChild.data);
-    }
-
-    console.log(`stack: ${stack}`);
-    const popped = stack.pop();
-    console.log(`stack after pop: ${stack}`);
-    hasPopped.push(popped);
-    if (stack.length === 0) {
-      return visited;
-    }
-    return inorder(popped, stack, visited, hasPopped);
-    */
+console.log(tree.postorder());
