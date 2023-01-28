@@ -252,7 +252,7 @@ const Tree = (array) => {
   const deleteNode = (value) => {
     const toDeleteNode = find(value);
     if (toDeleteNode.data === getMainRoot().data) {
-      const mid = Math.floor((0 + sortedArray.length - 1) / 2);
+      const mid = Math.floor((0 + getSortedArray().length - 1) / 2);
       getSortedArray().splice(mid, 1);
       setMainRoot(buildTree());
     } else if (toDeleteNode.leftChild === null && toDeleteNode.rightChild === null) {
@@ -263,6 +263,14 @@ const Tree = (array) => {
         parent.rightChild = null;
       }
       toDeleteNode.parent = null;
+    } else {
+      toDeleteNode.parent = null;
+      const locateIndexofData = (data) => data === toDeleteNode.data;
+      const index = getSortedArray().findIndex(locateIndexofData);
+      getSortedArray().splice(index, 1);
+      const newSortedArray = mergeSort(Array.from(new Set(getSortedArray())));
+      setSortedArray(newSortedArray);
+      setMainRoot(buildTree());
     }
   };
 
@@ -290,6 +298,9 @@ tree.insertNode(-1);
 tree.insertNode(100000);
 tree.insertNode(-2);
 tree.deleteNode(-2);
+tree.deleteNode(23);
+tree.deleteNode(67);
+tree.deleteNode(8);
 
 tree.prettyPrint(tree.getMainRoot());
 console.log(tree.postorder());
