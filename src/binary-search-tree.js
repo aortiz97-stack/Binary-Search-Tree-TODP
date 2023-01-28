@@ -274,6 +274,37 @@ const Tree = (array) => {
     }
   };
 
+  const height = (startingNode, stack = [{ node: startingNode, nodeHeight: 0 }], visited = []) => {
+    const unstackedObject = stack.pop();
+    visited.push(unstackedObject);
+    if (unstackedObject.node.leftChild === null
+      && unstackedObject.node.rightChild === null && stack.length === 0) {
+      let largestHeight = 0;
+      for (let i = 0; i < visited.length; i += 1) {
+        const visitedObject = visited[i];
+        if (visitedObject.nodeHeight > largestHeight) {
+          largestHeight = visitedObject.nodeHeight;
+        }
+      }
+      return largestHeight;
+    }
+    if (unstackedObject.node.rightChild !== null) {
+      const newObject = {
+        node: unstackedObject.node.rightChild,
+        nodeHeight: (unstackedObject.nodeHeight + 1),
+      };
+      stack.push(newObject);
+    }
+    if (unstackedObject.node.leftChild !== null) {
+      const newObject = {
+        node: unstackedObject.node.leftChild,
+        nodeHeight: (unstackedObject.nodeHeight + 1),
+      };
+      stack.push(newObject);
+    }
+    return height(startingNode, stack, visited);
+  };
+
   return {
     getSortedArray,
     getMainRoot,
@@ -285,6 +316,7 @@ const Tree = (array) => {
     preorder,
     inorder,
     postorder,
+    height,
   };
 };
 
@@ -303,4 +335,4 @@ tree.deleteNode(67);
 tree.deleteNode(8);
 
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.postorder());
+console.log(tree.height(tree.find(-1)));
