@@ -124,7 +124,7 @@ const Tree = (array) => {
     return levelOrder(callBack, queue, visited);
   };
 
-  const preorder = (stack = [getMainRoot().data], visited = []) => {
+  const preorder = (callback = undefined, stack = [getMainRoot().data], visited = []) => {
     const unstackedValue = stack.pop();
     const unstackedNode = find(unstackedValue);
     if (!visited.includes(unstackedValue)) {
@@ -133,6 +133,9 @@ const Tree = (array) => {
 
     if (unstackedNode.leftChild === null && unstackedNode.rightChild === null
       && stack.length === 0) {
+      if (callback !== undefined) {
+        return callback(visited);
+      }
       return visited;
     }
 
@@ -144,8 +147,11 @@ const Tree = (array) => {
     return preorder(stack, visited);
   };
 
-  const inorder = (stack = [getMainRoot().data], visited = []) => {
+  const inorder = (callback = undefined, stack = [getMainRoot().data], visited = []) => {
     if (stack.length === 0) {
+      if (callback !== undefined) {
+        return callback(visited);
+      }
       return visited;
     }
     const rootValue = stack.pop();
@@ -158,6 +164,9 @@ const Tree = (array) => {
     }
 
     if (root === null) {
+      if (callback !== undefined) {
+        return callback(visited);
+      }
       return visited;
     }
     if (root.leftChild === null && root.rightChild === null) {
@@ -191,8 +200,11 @@ const Tree = (array) => {
     return inorder(stack, visited);
   };
 
-  const postorder = (stack = [getMainRoot().data], visited = []) => {
+  const postorder = (callback = undefined, stack = [getMainRoot().data], visited = []) => {
     if (stack.length === 0) {
+      if (callback !== undefined) {
+        return callback(visited);
+      }
       return visited;
     }
     let rootValue = stack.pop();
@@ -202,6 +214,9 @@ const Tree = (array) => {
       root = find(rootValue);
     }
     if (root === null) {
+      if (callback !== undefined) {
+        return callback(visited);
+      }
       return visited;
     }
     if (root.leftChild === null && root.rightChild === null) {
@@ -325,6 +340,38 @@ const Tree = (array) => {
       stack.push(newObject);
     }
     return depth(targetNode, stack);
+  };
+
+  const isBalanced = (stack = [getMainRoot()]) => {
+    function hasLeafChildren(node) {
+      const hasChildren = !(node.leftChild === null && node.rightChild === null);
+      if (hasChildren) {
+        if (node.leftChild !== null) {
+          if (node.leftChild.leftChild === null && node.leftChild.rightChild === null) {
+            return true;
+          }
+        }
+        if (node.rightChild !== null) {
+          if (node.rightChild.leftChild === null && node.rightChild.rightChild === null) {
+            return true;
+          }
+        }
+      }
+      return false;
+    }
+    function reachedAllLeafNodeChildren(node) {
+      const allLeafChildren = hasLeafChildren(node.leftChild) && hasLeafChildren(node.rightChild);
+      const leftNoLeafRightLeaf = !hasLeafChildren(node.leftChild)
+        && hasLeafChildren(node.rightChild);
+      const leftLeafRightNoLeaf = hasLeafChildren(node.leftChild)
+        && !hasLeafChildren(node.rightChild);
+      return (allLeafChildren);
+    }
+
+    const unstackedNode = stack.pop();
+    if ((unstackedNode.leftChild === null && unstackedNode.rightChild === null)) {
+      return true;
+    }
   };
 
   return {
