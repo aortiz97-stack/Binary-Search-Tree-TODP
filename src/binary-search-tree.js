@@ -305,6 +305,28 @@ const Tree = (array) => {
     return height(startingNode, stack, visited);
   };
 
+  const depth = (targetNode, stack = [{ node: getMainRoot(), nodeDepth: 0 }]) => {
+    const unstackedObject = stack.pop();
+    if (unstackedObject.node === targetNode) {
+      return unstackedObject.nodeDepth;
+    }
+    if (unstackedObject.node.rightChild !== null) {
+      const newObject = {
+        node: unstackedObject.node.rightChild,
+        nodeDepth: (unstackedObject.nodeDepth + 1),
+      };
+      stack.push(newObject);
+    }
+    if (unstackedObject.node.leftChild !== null) {
+      const newObject = {
+        node: unstackedObject.node.leftChild,
+        nodeDepth: (unstackedObject.nodeDepth + 1)
+      };
+      stack.push(newObject);
+    }
+    return depth(targetNode, stack);
+  };
+
   return {
     getSortedArray,
     getMainRoot,
@@ -317,6 +339,7 @@ const Tree = (array) => {
     inorder,
     postorder,
     height,
+    depth,
   };
 };
 
@@ -335,4 +358,4 @@ tree.deleteNode(67);
 tree.deleteNode(8);
 
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.height(tree.find(-1)));
+console.log(tree.depth(tree.find(100000)));
