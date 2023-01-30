@@ -1,15 +1,5 @@
 import mergeSort from './merge-sort';
-
-const Node = (value) => {
-  const data = value;
-  const leftChild = null;
-  const rightChild = null;
-  const parent = null;
-
-  return {
-    data, leftChild, rightChild, parent,
-  };
-};
+import Node from './node';
 
 const Tree = (array) => {
   const prepareArray = () => {
