@@ -365,6 +365,15 @@ const Tree = (array) => {
     return false;
   };
 
+  const rebalance = () => {
+    if (!isBalanced()) {
+      const allNodesArr = inorder();
+      const newSortedArray = mergeSort(Array.from(new Set(allNodesArr)));
+      setSortedArray(newSortedArray);
+      setMainRoot(buildTree());
+    }
+  };
+
   return {
     getSortedArray,
     getMainRoot,
@@ -379,6 +388,7 @@ const Tree = (array) => {
     height,
     depth,
     isBalanced,
+    rebalance,
   };
 };
 
