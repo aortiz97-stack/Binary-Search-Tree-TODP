@@ -392,20 +392,20 @@ const Tree = (array) => {
   };
 };
 
-const tree = Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-tree.insertNode(63);
-tree.insertNode(65);
-tree.insertNode(64);
-tree.insertNode(0);
-tree.insertNode(10000);
-tree.insertNode(-1);
-tree.insertNode(100000);
-tree.insertNode(-2);
-tree.deleteNode(-2);
-tree.deleteNode(23);
-tree.deleteNode(67);
-tree.deleteNode(8);
+function randomArray() {
+  const randomLength = Math.floor((Math.random() + 1) * 100);
+  const finalArr = [];
+  for (let i = 0; i < randomLength; i += 1) {
+    const randomNum = Math.floor((Math.random() + 1) * 100);
+    finalArr.push(randomNum);
+  }
+  return finalArr;
+}
 
-tree.prettyPrint(tree.getMainRoot());
-console.log(tree.inorder());
+const tree = Tree(randomArray());
+console.log(tree.getSortedArray());
+console.log(tree.prettyPrint(tree.getMainRoot()));
 console.log(tree.isBalanced());
+console.log(`preOrder: ${tree.preorder()}\n`);
+console.log(`inOrder: ${tree.inorder()}\n`);
+console.log(`postorder: ${tree.postorder()}\n`);
