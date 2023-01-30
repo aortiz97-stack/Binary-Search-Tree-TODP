@@ -144,7 +144,7 @@ const Tree = (array) => {
     } if (unstackedNode.leftChild !== null) {
       stack.push(unstackedNode.leftChild.data);
     }
-    return preorder(stack, visited);
+    return preorder(callback, stack, visited);
   };
 
   const inorder = (callback = undefined, stack = [getMainRoot().data], visited = []) => {
@@ -160,7 +160,7 @@ const Tree = (array) => {
     if (rootValue === null) {
       const additionalPop = stack.pop();
       visited.push(additionalPop);
-      return inorder(stack, visited);
+      return inorder(callback, stack, visited);
     }
 
     if (root === null) {
@@ -175,14 +175,14 @@ const Tree = (array) => {
       if (additionalPop !== undefined) {
         visited.push(additionalPop);
       }
-      return inorder(stack, visited);
+      return inorder(callback, stack, visited);
     }
     if (root.leftChild === null) {
       if (root.rightChild !== null) {
         stack.push(root.rightChild.data);
       }
       visited.push(rootValue);
-      return inorder(stack, visited);
+      return inorder(callback, stack, visited);
     }
     if (root.rightChild === null) {
       stack.push(null);
@@ -190,14 +190,14 @@ const Tree = (array) => {
       if (root.leftChild !== null) {
         stack.push(root.leftChild.data);
       }
-      return inorder(stack, visited);
+      return inorder(callback, stack, visited);
     }
     if (root.rightChild !== null) {
       stack.push(root.rightChild.data);
     }
     stack.push(rootValue);
     stack.push(root.leftChild.data);
-    return inorder(stack, visited);
+    return inorder(callback, stack, visited);
   };
 
   const postorder = (callback = undefined, stack = [getMainRoot().data], visited = []) => {
@@ -221,9 +221,8 @@ const Tree = (array) => {
     }
     if (root.leftChild === null && root.rightChild === null) {
       visited.push(rootValue);
-      return postorder(stack, visited);
+      return postorder(callback, stack, visited);
     }
-
     function allChildrenVisited() {
       const bothChildrenVisited = root.rightChild !== null && root.leftChild !== null
       && visited.includes(root.leftChild.data) && visited.includes(root.rightChild.data);
@@ -233,10 +232,9 @@ const Tree = (array) => {
       && visited.includes(root.leftChild.data);
       return (bothChildrenVisited || leftNullRightVisited || leftVisitedRightNull);
     }
-
     if (allChildrenVisited()) {
       visited.push(rootValue);
-      return postorder(stack, visited);
+      return postorder(callback, stack, visited);
     }
     if (root.rightChild === null && root.leftChild !== null) {
       if (!visited.includes(rootValue)) {
@@ -251,7 +249,7 @@ const Tree = (array) => {
     if (root.leftChild === null && root.rightChild !== null) {
       if (visited.includes(root.rightChild.data)) {
         visited.push(rootValue);
-        return postorder(stack, visited);
+        return postorder(callback, stack, visited);
       }
     }
     stack.push(rootValue);
@@ -261,7 +259,7 @@ const Tree = (array) => {
     if (root.leftChild !== null && !visited.includes(root.leftChild.data)) {
       stack.push(root.leftChild.data);
     }
-    return postorder(stack, visited);
+    return postorder(callback, stack, visited);
   };
 
   const deleteNode = (value) => {
@@ -335,43 +333,36 @@ const Tree = (array) => {
     if (unstackedObject.node.leftChild !== null) {
       const newObject = {
         node: unstackedObject.node.leftChild,
-        nodeDepth: (unstackedObject.nodeDepth + 1)
+        nodeDepth: (unstackedObject.nodeDepth + 1),
       };
       stack.push(newObject);
     }
     return depth(targetNode, stack);
   };
 
-  const isBalanced = (stack = [getMainRoot()]) => {
-    function hasLeafChildren(node) {
-      const hasChildren = !(node.leftChild === null && node.rightChild === null);
-      if (hasChildren) {
-        if (node.leftChild !== null) {
-          if (node.leftChild.leftChild === null && node.leftChild.rightChild === null) {
-            return true;
-          }
-        }
-        if (node.rightChild !== null) {
-          if (node.rightChild.leftChild === null && node.rightChild.rightChild === null) {
-            return true;
-          }
+  const isBalanced = () => {
+    function returnLeafNodes(traversedValues) {
+      const leafNodes = [];
+      for (let i = 0; i < traversedValues.length; i += 1) {
+        const traversedNode = find(traversedValues[i]);
+        if (traversedNode.leftChild === null && traversedNode.rightChild === null) {
+          leafNodes.push(traversedNode);
         }
       }
-      return false;
+      return leafNodes;
     }
-    function reachedAllLeafNodeChildren(node) {
-      const allLeafChildren = hasLeafChildren(node.leftChild) && hasLeafChildren(node.rightChild);
-      const leftNoLeafRightLeaf = !hasLeafChildren(node.leftChild)
-        && hasLeafChildren(node.rightChild);
-      const leftLeafRightNoLeaf = hasLeafChildren(node.leftChild)
-        && !hasLeafChildren(node.rightChild);
-      return (allLeafChildren);
+    const depths = [];
+    const leafNodes = inorder(returnLeafNodes);
+    for (let i = 0; i < leafNodes.length; i += 1) {
+      const nodeDepth = depth(leafNodes[i]);
+      depths.push(nodeDepth);
     }
-
-    const unstackedNode = stack.pop();
-    if ((unstackedNode.leftChild === null && unstackedNode.rightChild === null)) {
-      return true;
-    }
+    const sortedDepths = mergeSort(depths);
+    const greatestDepth = sortedDepths[sortedDepths.length - 1];
+    const secondGreatestDepth = sortedDepths[sortedDepths.length - 2];
+    const diff = greatestDepth - secondGreatestDepth;
+    if (diff <= 1) return true;
+    return false;
   };
 
   return {
@@ -387,6 +378,7 @@ const Tree = (array) => {
     postorder,
     height,
     depth,
+    isBalanced,
   };
 };
 
@@ -405,4 +397,5 @@ tree.deleteNode(67);
 tree.deleteNode(8);
 
 tree.prettyPrint(tree.getMainRoot());
-console.log(tree.depth(tree.find(100000)));
+console.log(tree.inorder());
+console.log(tree.isBalanced());
